@@ -142,7 +142,7 @@ const convertPatternsToValues = (
   dayOfWeekPattern
 ) => ({
   minute: convertPatternToValue(minutePattern, 0, 59),
-  hour: convertPatternToValue(hourPattern, 0, 59),
+  hour: convertPatternToValue(hourPattern, 0, 23),
   dayOfMonth: convertPatternToValue(dayOfMonthPattern, 1, 31),
   month: convertPatternToValue(monthPattern, 1, 12),
   day: convertPatternToValue(dayOfWeekPattern, 0, 6),
