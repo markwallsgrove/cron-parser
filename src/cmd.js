@@ -12,8 +12,36 @@ const parseCmdArgument = (arg) => {
     return [...timePatterns, command];
 };
 
-const convertPatternToValue = (pattern, min, max) => {
 
+
+const simplePattern = new RegExp('^[0-9]+$');
+const stepPattern = new RegExp('^\\*\\/([0-9]+)$');
+const rangePattern = new RegExp('^([0-9]+)\-([0-9]+)');
+const convertPatternToValue = (pattern, min, max) => {
+    if (pattern.match(simplePattern)) {
+        const value = Number.parseInt(pattern);
+        if (value < min || value > max) {
+            throw new Error('Number not within range');
+        }
+        return [value];
+    } else if (stepMatch = pattern.match(stepPattern)) {
+        const step = Number.parseInt(stepMatch[1]);
+        const steps = [];
+        for (let index = 0; step * index < max; index++) {
+          steps.push(step * index);
+        }
+        return steps;
+    } else if (rangeMatch = pattern.match(rangePattern)) {
+        const startValue = Number.parseInt(rangeMatch[1]);
+        const endValue = Number.parseInt(rangeMatch[2]);
+        const values = [];
+        for (let index = startValue; index < endValue + 1; index++) {
+          values.push(index);
+        }
+        return values;
+    } else {
+        throw new Error(`Unknown pattern type ${pattern}`);
+    }
 };
 
 const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, monthPattern, dayOfWeekPattern) => [
