@@ -3,13 +3,13 @@
  * Parse the command line argument into an array. The first five entries will be the time patterns,
  * which will be followed by the command. These values are not validated.
  * @param {string} arg Argument from the terminal
- * @return string[] array containing the time patterns followed by the command
+ * @return string[] array containing the time patterns followed by the command. There might be missing entries.
  */
 const parseCmdArgument = (arg) => {
     const chunks = arg.split(' ');
     const timePatterns = chunks.slice(0, 5);
     const command = chunks.slice(5).join(' ');
-    return [...timePatterns, command];
+    return [...timePatterns, command].filter((value) => !!value);
 };
 
 const simplePattern = new RegExp('^[0-9]+$');
@@ -115,7 +115,7 @@ const display = (values, command, stdout) => {
 }
 
 const showHelp = (stderr) => {
-    stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
+  stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
 }
 
 const main = (argv, stderr, stdout) => {
@@ -126,7 +126,7 @@ const main = (argv, stderr, stdout) => {
     }
 
     const command = args[args.length - 1];
-    
+
     try {
       const values = convertPatternsToValues(...args);
       display(values, command, stdout);

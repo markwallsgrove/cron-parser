@@ -10,9 +10,14 @@ test('should parse command argument when command has arguments', () => {
   expect(chunks).toStrictEqual(['*/15', '0', '1,15', '*', '1-5', '/usr/bin/find . -type f']);
 });
 
+test('should parse command argument when command is missing', () => {
+  const chunks = parseCmdArgument('*/15 0 1,15 * 1-5');
+  expect(chunks).toStrictEqual(['*/15', '0', '1,15', '*', '1-5']);
+});
+
 test('should parse command argument when command is empty', () => {
   const chunks = parseCmdArgument('');
-  expect(chunks).toStrictEqual(['', '']);
+  expect(chunks).toStrictEqual([]);
 });
 
 test('should convert simple pattern into array of values', () => {
