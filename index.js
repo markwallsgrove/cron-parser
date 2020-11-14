@@ -13,5 +13,14 @@ const parseCmdArgument = (arg) => {
     return [...timePatterns, command];
 };
 
+const showHelp = () => {
+    process.stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
+}
+
+const args = parseCmdArgument(process.argv[2] || '');
+if (args.length !== 6) {
+  showHelp();
+  process.exit(1);
+}
 
 module.exports.parseCmdArgument = parseCmdArgument;
