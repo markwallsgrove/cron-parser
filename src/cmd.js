@@ -18,6 +18,15 @@ const rangePattern = new RegExp('^([0-9]+)\-([0-9]+)');
 const listPattern = new RegExp('^[0-9]+(,[0-9]+)*$');
 const allPattern = new RegExp('^\\*$')
 
+/**
+ * Return a simple number within an array. The number must be within
+ * the min and max range else a error will be thrown.
+ * @param {number} value number to return
+ * @param {number} min minimum value the number can be
+ * @param {number} max maximum value the number can be (inclusive)
+ * @return array array containing value
+ * @throws number not within range
+ */
 const generateSimpleValues = (value, min, max) => {
     if (value < min || value > max) {
         throw new Error('Number not within range');
@@ -25,7 +34,21 @@ const generateSimpleValues = (value, min, max) => {
     return [value];
 }
 
+/**
+ * Generate a set of numbers that represents a step pattern. The
+ * steps will start from the minimum value and end below the maximum
+ * value.
+ * @param {number} step value to step by until maximum value is reached
+ * @param {number} min minimum step value
+ * @param {number} max maximum step value
+ * @return array steps within min and max 
+ * @throw invalid step value if not within range
+ */
 const generateStepValues = (step, min, max) => {
+  if (step < min || step > max) {
+      throw new Error('invalid step value');
+  }
+
   const steps = [];
   for (let index = min; step * index < max; index++) {
     steps.push(step * index);

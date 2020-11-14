@@ -28,6 +28,11 @@ test('should convert step pattern into array of values', () => {
   expect(convertPatternToValue('*/10', 0, 59)).toStrictEqual([0, 10, 20, 30, 40, 50]);
 });
 
+test('should step pattern should throw error if not within range', () => {
+  expect(() => { convertPatternToValue('*/10', 0, 5) }).toThrow('invalid step value');
+  expect(() => { convertPatternToValue('*/10', 20, 30) }).toThrow('invalid step value');
+});
+
 test('should convert range pattern into array of values', () => {
   expect(convertPatternToValue('5-10', 0, 59)).toStrictEqual([5, 6, 7, 8, 9, 10]);
 });
