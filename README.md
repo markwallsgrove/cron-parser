@@ -3,9 +3,16 @@ Standard CRON format parser that summarises the pattern. The parser accepts a st
 
 Special cases such as `@yearly` are currently not supported.
 
+## Dependencies
+Node: 12
+NPM: 6.14.6
+
+## Install
+- install all modules `npm i`
+
 ## Execution
 ```
-# ./your-program "*/15 0 1,15 * 1-5 /usr/bin/find"
+# ./index.js "*/15 0 1,15 * 1-5 /usr/bin/find"
 minute 0 15 30 45
 hour 0
 day of month 1 15
