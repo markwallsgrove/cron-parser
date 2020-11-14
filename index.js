@@ -17,10 +17,16 @@ const showHelp = () => {
     process.stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
 }
 
-const args = parseCmdArgument(process.argv[2] || '');
-if (args.length !== 6) {
-  showHelp();
-  process.exit(1);
-}
+const main = (argv) => {
+    const args = parseCmdArgument(argv[2] || '');
+    if (args.length !== 6) {
+        showHelp();
+        return 1;
+    }
+
+    return 0;
+}; 
+
+process.exit(main(process.argv));
 
 module.exports.parseCmdArgument = parseCmdArgument;
