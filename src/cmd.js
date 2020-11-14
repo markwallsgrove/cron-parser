@@ -56,6 +56,12 @@ const generateStepValues = (step, min, max) => {
   return steps;
 }
 
+/**
+ * Generate a range of values from the start to the end value (inclusive).
+ * @param {number} startValue start value of range
+ * @param {number} endValue end value of range
+ * @return array of values that represents the value
+ */
 const generateRangeValues = (startValue, endValue) => {
   const values = [];
   for (let index = startValue; index < endValue + 1; index++) {
@@ -64,6 +70,14 @@ const generateRangeValues = (startValue, endValue) => {
   return values;
 }
 
+/**
+ * Generate a list of values from a string that is comma delimited.
+ * @param {string} values comma delimited set of numbers
+ * @param {number} min minimum value a listed value can be 
+ * @param {number} max maximum value a listed value can be
+ * @return array list of numbers
+ * @throw invalid number within list
+ */
 const generateListValues = (values, min, max) => {
   return values.split(',').map((val) => {
     const numb = Number.parseInt(val);
@@ -76,6 +90,12 @@ const generateListValues = (values, min, max) => {
   });
 }
 
+/**
+ * Generate all values between a minimum and maximum number.
+ * @param {number} min minimum value of the values
+ * @param {number} max maximum value of the values
+ * @returns array of numbers
+ */
 const generateAllValues = (min, max) => {
     const values = [];
     for (let index = min; index < max + 1; index++) {
@@ -120,21 +140,31 @@ const convertPatternToValue = (pattern, min, max) => {
     }
 };
 
+/**
+ * Convert all patterns into a list of values which represents the pattern.
+ * @param {*} minutePattern pattern for generating the minute values
+ * @param {*} hourPattern  pattern for generating the hour values
+ * @param {*} dayOfMonthPattern pattern for generating the day of month values.
+ * @param {*} monthPattern pattern for generating the month values
+ * @param {*} dayOfWeekPattern pattern for generating the day of week values
+ * @return object keys to values that represent the pattern
+ * @throws error if patterns are unknown or not within range
+ */
 const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, monthPattern, dayOfWeekPattern) => ({
-    minute: convertPatternToValue(minutePattern, 0, 59),
-    hour: convertPatternToValue(hourPattern, 0, 59),
-    dayOfMonth: convertPatternToValue(dayOfMonthPattern, 1, 31),
-    month: convertPatternToValue(monthPattern, 1, 12),
-    day: convertPatternToValue(dayOfWeekPattern, 0, 6),
+  minute: convertPatternToValue(minutePattern, 0, 59),
+  hour: convertPatternToValue(hourPattern, 0, 59),
+  dayOfMonth: convertPatternToValue(dayOfMonthPattern, 1, 31),
+  month: convertPatternToValue(monthPattern, 1, 12),
+  day: convertPatternToValue(dayOfWeekPattern, 0, 6),
 });
 
 const display = (values, command, stdout) => {
-    stdout.write(`minute        ${values.minute.join(' ')}\n`);
-    stdout.write(`hour          ${values.hour.join(' ')}\n`);
-    stdout.write(`day of month  ${values.dayOfMonth.join(' ')}\n`);
-    stdout.write(`month         ${values.month.join(' ')}\n`);
-    stdout.write(`day of week   ${values.day.join(' ')}\n`);
-    stdout.write(`command       ${command}\n`);
+  stdout.write(`minute        ${values.minute.join(' ')}\n`);
+  stdout.write(`hour          ${values.hour.join(' ')}\n`);
+  stdout.write(`day of month  ${values.dayOfMonth.join(' ')}\n`);
+  stdout.write(`month         ${values.month.join(' ')}\n`);
+  stdout.write(`day of week   ${values.day.join(' ')}\n`);
+  stdout.write(`command       ${command}\n`);
 }
 
 const showHelp = (stderr) => {
@@ -142,26 +172,27 @@ const showHelp = (stderr) => {
 }
 
 const main = (argv, stderr, stdout) => {
-    const args = parseCmdArgument(argv[2] || '');
-    if (args.length !== 6) {
-        showHelp(stderr);
-        return 1;
-    }
+  const args = parseCmdArgument(argv[2] || '');
+  if (args.length !== 6) {
+    showHelp(stderr);
+    return 1;
+  }
 
-    const command = args[args.length - 1];
+  const command = args[args.length - 1];
 
-    try {
-      const values = convertPatternsToValues(...args);
-      display(values, command, stdout);
-    } catch (err) {
-      stderr.write(`${err.message}\n`);
-    }
+  try {
+    const values = convertPatternsToValues(...args);
+    display(values, command, stdout);
+  } catch (err) {
+    stderr.write(`${err.message}\n`);
+    return 1;
+  }
 
-    return 0;
+  return 0;
 }; 
 
 module.exports = {
-    parseCmdArgument,
-    convertPatternToValue,
-    main,
-  };
+  parseCmdArgument,
+  convertPatternToValue,
+  main,
+};
