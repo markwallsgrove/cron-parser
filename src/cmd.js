@@ -90,21 +90,6 @@ const generateListValues = (values, min, max) => {
 };
 
 /**
- * Generate all values between a minimum and maximum number.
- * @param {number} min minimum value of the values
- * @param {number} max maximum value of the values
- * @returns array of numbers
- */
-const generateAllValues = (min, max) => {
-  const values = [];
-  for (let index = min; index < max + 1; index++) {
-    values.push(index);
-  }
-
-  return values;
-};
-
-/**
  * Convert a string pattern into a list of values that represents the pattern.
  *
  * If the pattern is simple (10) it must be within the minimum and maximum values.
@@ -133,7 +118,7 @@ const convertPatternToValue = (pattern, min, max) => {
   } else if (pattern.match(listPattern)) {
     return generateListValues(pattern, min, max);
   } else if (pattern.match(allPattern)) {
-    return generateAllValues(min, max);
+    return generateRangeValues(min, max);
   } else {
     throw new Error(`Unknown pattern type '${pattern}'`);
   }
