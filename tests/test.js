@@ -26,3 +26,15 @@ test('should convert step pattern into array of values', () => {
 test('should convert range pattern into array of values', () => {
   expect(convertPatternToValue('5-10', 0, 59)).toStrictEqual([5, 6, 7, 8, 9, 10]);
 });
+
+test('should convert list pattern into array of values', () => {
+  expect(convertPatternToValue('5,10', 0, 59)).toStrictEqual([5, 10]);
+});
+
+test('should throw error if list pattern is invalid', () => {
+  expect(() => { convertPatternToValue('99,10', 0, 59) }).toThrow('invalid number within list');
+});
+
+test('should throw error if pattern is not known', () => {
+  expect(() => { convertPatternToValue('unknown', 0, 59) }).toThrow("Unknown pattern type 'unknown'");
+});

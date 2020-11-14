@@ -15,7 +15,7 @@ const parseCmdArgument = (arg) => {
 const simplePattern = new RegExp('^[0-9]+$');
 const stepPattern = new RegExp('^\\*\\/([0-9]+)$');
 const rangePattern = new RegExp('^([0-9]+)\-([0-9]+)');
-
+const listPattern = new RegExp('^[0-9]+(,[0-9]+)*$');
 
 const generateSimpleValues = (value, min, max) => {
     if (value < min || value > max) {
@@ -40,6 +40,18 @@ const generateRangeValues = (startValue, endValue) => {
   return values;
 }
 
+const generateListValues = (values, min, max) => {
+  return values.split(',').map((val) => {
+    const numb = Number.parseInt(val);
+
+    if (numb < min || numb > max) {
+      throw new Error('invalid number within list');
+    }
+
+    return numb;
+  });
+}
+
 /**
  * Convert a string pattern into a list of values that represents the pattern.
  * 
@@ -53,6 +65,7 @@ const generateRangeValues = (startValue, endValue) => {
  * @param {int} min minimum value the pattern must represent
  * @param {int} max maximum value the pattern 
  * @return array list of values that represents the pattern
+ * @throws error unknown pattern
  */
 const convertPatternToValue = (pattern, min, max) => {
     if (pattern.match(simplePattern)) {
@@ -65,37 +78,39 @@ const convertPatternToValue = (pattern, min, max) => {
         const startValue = Number.parseInt(rangeMatch[1]);
         const endValue = Number.parseInt(rangeMatch[2]);
         return generateRangeValues(startValue, endValue);
+    } else if (pattern.match(listPattern)) {
+        return generateListValues(pattern, min, max);
     } else {
-        throw new Error(`Unknown pattern type ${pattern}`);
+        throw new Error(`Unknown pattern type '${pattern}'`);
     }
 };
 
-const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, monthPattern, dayOfWeekPattern) => [
-    convertPatternToValue(minutePattern, 0, 59),
-    convertPatternToValue(hourPattern, 0, 59),
-    convertPatternToValue(dayOfMonthPattern, 1, 31),
-    convertPatternToValue(monthPattern, 1, 12),
-    convertPatternToValue(dayOfWeekPattern, 0, 6),
-];
+const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, monthPattern, dayOfWeekPattern) => ({
+    minute: convertPatternToValue(minutePattern, 0, 59),
+    hour: convertPatternToValue(hourPattern, 0, 59),
+    dayOfMonth: convertPatternToValue(dayOfMonthPattern, 1, 31),
+    month: convertPatternToValue(monthPattern, 1, 12),
+    day: convertPatternToValue(dayOfWeekPattern, 0, 6),
+});
 
-const display = (args) => {
+const display = (values) => {
 
 }
 
-const showHelp = () => {
-    process.stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
+const showHelp = (stderr) => {
+    stderr.write(`Usage: cronParser "[minute] [hour] [day of month] [month] [day of week] [command]"`);
 }
 
-const main = (argv) => {
+const main = (argv, stderr, stdout) => {
     const args = parseCmdArgument(argv[2] || '');
     if (args.length !== 6) {
-        showHelp();
+        showHelp(stderr);
         return 1;
     }
 
     const command = args[args.length - 1];
-    const values = convertPatternToValues(...args);
-    display(...values, command);
+    const values = convertPatternsToValues(...args);
+    display(values, command, stdout);
 
     return 0;
 }; 
