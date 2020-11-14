@@ -35,6 +35,10 @@ test('should throw error if list pattern is invalid', () => {
   expect(() => { convertPatternToValue('99,10', 0, 59) }).toThrow('invalid number within list');
 });
 
+test('should convert all pattern into array of values', () => {
+  expect(convertPatternToValue('*', 1, 5)).toStrictEqual([1,2,3,4,5]);
+});
+
 test('should throw error if pattern is not known', () => {
   expect(() => { convertPatternToValue('unknown', 0, 59) }).toThrow("Unknown pattern type 'unknown'");
 });

@@ -16,6 +16,7 @@ const simplePattern = new RegExp('^[0-9]+$');
 const stepPattern = new RegExp('^\\*\\/([0-9]+)$');
 const rangePattern = new RegExp('^([0-9]+)\-([0-9]+)');
 const listPattern = new RegExp('^[0-9]+(,[0-9]+)*$');
+const allPattern = new RegExp('^\\*$')
 
 const generateSimpleValues = (value, min, max) => {
     if (value < min || value > max) {
@@ -52,6 +53,15 @@ const generateListValues = (values, min, max) => {
   });
 }
 
+const generateAllValues = (min, max) => {
+    const values = [];
+    for (let index = min; index < max + 1; index++) {
+        values.push(index);
+    }
+
+    return values;
+}
+
 /**
  * Convert a string pattern into a list of values that represents the pattern.
  * 
@@ -80,6 +90,8 @@ const convertPatternToValue = (pattern, min, max) => {
         return generateRangeValues(startValue, endValue);
     } else if (pattern.match(listPattern)) {
         return generateListValues(pattern, min, max);
+    } else if (pattern.match(allPattern)) {
+        return generateAllValues(min, max);
     } else {
         throw new Error(`Unknown pattern type '${pattern}'`);
     }
@@ -93,8 +105,13 @@ const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, 
     day: convertPatternToValue(dayOfWeekPattern, 0, 6),
 });
 
-const display = (values) => {
-
+const display = (values, command, stdout) => {
+    stdout.write(`minute        ${values.minute.join(' ')}\n`);
+    stdout.write(`hour          ${values.hour.join(' ')}\n`);
+    stdout.write(`day of month  ${values.dayOfMonth.join(' ')}\n`);
+    stdout.write(`month         ${values.month.join(' ')}\n`);
+    stdout.write(`day of week   ${values.day.join(' ')}\n`);
+    stdout.write(`command       ${command}\n`);
 }
 
 const showHelp = (stderr) => {
