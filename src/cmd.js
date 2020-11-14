@@ -126,8 +126,13 @@ const main = (argv, stderr, stdout) => {
     }
 
     const command = args[args.length - 1];
-    const values = convertPatternsToValues(...args);
-    display(values, command, stdout);
+    
+    try {
+      const values = convertPatternsToValues(...args);
+      display(values, command, stdout);
+    } catch (err) {
+      stderr.write(`${err.message}\n`);
+    }
 
     return 0;
 }; 
