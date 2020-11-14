@@ -142,12 +142,12 @@ const convertPatternToValue = (pattern, min, max) => {
 
 /**
  * Convert all patterns into a list of values which represents the pattern.
- * @param {*} minutePattern pattern for generating the minute values
- * @param {*} hourPattern  pattern for generating the hour values
- * @param {*} dayOfMonthPattern pattern for generating the day of month values.
- * @param {*} monthPattern pattern for generating the month values
- * @param {*} dayOfWeekPattern pattern for generating the day of week values
- * @return object keys to values that represent the pattern
+ * @param {string} minutePattern pattern for generating the minute values
+ * @param {string} hourPattern  pattern for generating the hour values
+ * @param {string} dayOfMonthPattern pattern for generating the day of month values.
+ * @param {string} monthPattern pattern for generating the month values
+ * @param {string} dayOfWeekPattern pattern for generating the day of week values
+ * @return object keys to array of integer that represent the pattern
  * @throws error if patterns are unknown or not within range
  */
 const convertPatternsToValues = (minutePattern, hourPattern, dayOfMonthPattern, monthPattern, dayOfWeekPattern) => ({
@@ -194,5 +194,6 @@ const main = (argv, stderr, stdout) => {
 module.exports = {
   parseCmdArgument,
   convertPatternToValue,
+  convertPatternsToValues,
   main,
 };

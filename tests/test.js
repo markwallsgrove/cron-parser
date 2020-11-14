@@ -1,4 +1,4 @@
-const { parseCmdArgument, convertPatternToValue } = require('../src/cmd');
+const { parseCmdArgument, convertPatternToValue, convertPatternsToValues } = require('../src/cmd');
 
 test('should parse command argument', () => {
   const chunks = parseCmdArgument('*/15 0 1,15 * 1-5 /usr/bin/find');
@@ -51,4 +51,19 @@ test('should convert all pattern into array of values', () => {
 
 test('should throw error if pattern is not known', () => {
   expect(() => { convertPatternToValue('unknown', 0, 59) }).toThrow("Unknown pattern type 'unknown'");
+});
+
+test('should parse patterns into values', () => {
+  const result = convertPatternsToValues('1', '1-2', '*/10', '1,3', '0');
+  expect(result).toStrictEqual({
+    minute: [1],
+    hour: [1, 2],
+    dayOfMonth: [10, 20, 30],
+    month: [1, 3],
+    day: [0],
+  })
+});
+
+test('should throw error if parse patterns are invalid', () => {
+  expect(() => { convertPatternsToValues('1', 'invalid', '*/10', '1,3', '0') }).toThrow("Unknown pattern type 'invalid'");
 });
