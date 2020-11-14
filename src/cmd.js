@@ -12,33 +12,59 @@ const parseCmdArgument = (arg) => {
     return [...timePatterns, command];
 };
 
-
-
 const simplePattern = new RegExp('^[0-9]+$');
 const stepPattern = new RegExp('^\\*\\/([0-9]+)$');
 const rangePattern = new RegExp('^([0-9]+)\-([0-9]+)');
+
+
+const generateSimpleValues = (value, min, max) => {
+    if (value < min || value > max) {
+        throw new Error('Number not within range');
+    }
+    return [value];
+}
+
+const generateStepValues = (step, min, max) => {
+  const steps = [];
+  for (let index = min; step * index < max; index++) {
+    steps.push(step * index);
+  }
+  return steps;
+}
+
+const generateRangeValues = (startValue, endValue) => {
+  const values = [];
+  for (let index = startValue; index < endValue + 1; index++) {
+    values.push(index);
+  }
+  return values;
+}
+
+/**
+ * Convert a string pattern into a list of values that represents the pattern.
+ * 
+ * If the pattern is simple (10) it must be within the minimum and maximum values.
+ * 
+ * When the stepped pattern (\*\/10) is converted the values returned will be within the minimum and maximum values.
+ * 
+ * The values within the range pattern (1-10) must be within the minimum and maximum values.
+ * 
+ * @param {string} pattern simple, stepped, or range pattern
+ * @param {int} min minimum value the pattern must represent
+ * @param {int} max maximum value the pattern 
+ * @return array list of values that represents the pattern
+ */
 const convertPatternToValue = (pattern, min, max) => {
     if (pattern.match(simplePattern)) {
         const value = Number.parseInt(pattern);
-        if (value < min || value > max) {
-            throw new Error('Number not within range');
-        }
-        return [value];
+        return generateSimpleValues(value, min, max);
     } else if (stepMatch = pattern.match(stepPattern)) {
         const step = Number.parseInt(stepMatch[1]);
-        const steps = [];
-        for (let index = 0; step * index < max; index++) {
-          steps.push(step * index);
-        }
-        return steps;
+        return generateStepValues(step, min, max);
     } else if (rangeMatch = pattern.match(rangePattern)) {
         const startValue = Number.parseInt(rangeMatch[1]);
         const endValue = Number.parseInt(rangeMatch[2]);
-        const values = [];
-        for (let index = startValue; index < endValue + 1; index++) {
-          values.push(index);
-        }
-        return values;
+        return generateRangeValues(startValue, endValue);
     } else {
         throw new Error(`Unknown pattern type ${pattern}`);
     }
